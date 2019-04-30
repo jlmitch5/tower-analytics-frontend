@@ -20,6 +20,11 @@
 .pf-c-modal-box.templateModal {
   --pf-c-modal-box--Width: 1000px;
 
+  .pf-c-modal-box__body {
+      height: 400px;
+      max-height: none;
+  }
+
   .pf-c-table {
     --pf-c-table-td--PaddingBottom: 20px;
     --pf-c-table-td--PaddingTop: 20px;
