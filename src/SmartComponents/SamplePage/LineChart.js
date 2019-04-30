@@ -1,7 +1,7 @@
 /* eslint-disable */
-import React, { Component } from "react";
-import Tooltip from "../../Utilities/Tooltip";
-import * as d3 from "d3";
+import React, { Component } from 'react';
+import Tooltip from '../../Utilities/Tooltip';
+import * as d3 from 'd3';
 
 class LineChart extends Component {
   constructor(props) {
@@ -28,13 +28,13 @@ class LineChart extends Component {
 
   async init() {
     // Clear our chart container element first
-    d3.selectAll("#d3-chart-root > *").remove();
+    d3.selectAll('#d3-chart-root > *').remove();
     const width =
-        parseInt(d3.select("#" + this.props.id).style("width")) -
+        parseInt(d3.select('#' + this.props.id).style('width')) -
         this.margin.left -
         this.margin.right,
       height =
-        parseInt(d3.select("#" + this.props.id).style("height")) -
+        parseInt(d3.select('#' + this.props.id).style('height')) -
         this.margin.top -
         this.margin.bottom;
 
@@ -42,46 +42,46 @@ class LineChart extends Component {
       path
         .transition()
         .duration(1000)
-        .attrTween("stroke-dasharray", tweenDash);
+        .attrTween('stroke-dasharray', tweenDash);
     }
     function tweenDash() {
       const l = this.getTotalLength(),
-        i = d3.interpolateString("0," + l, l + "," + l);
+        i = d3.interpolateString('0,' + l, l + ',' + l);
       return function(t) {
         return i(t);
       };
     }
 
-    const parseTime = d3.timeParse("%Y-%m-%d");
-    const formatTooltipDate = d3.timeFormat("%b %d");
+    const parseTime = d3.timeParse('%Y-%m-%d');
+    const formatTooltipDate = d3.timeFormat('%b %d');
     const x = d3.scaleTime().range([0, width]);
     const y = d3.scaleLinear().range([height, 0]);
 
     //[success, fail, total]
-    let colors = d3.scaleOrdinal(["#5cb85c", "#d9534f", "#337ab7"]);
+    let colors = d3.scaleOrdinal(['#5cb85c', '#d9534f', '#337ab7']);
     if (this.props.isAccessible) {
-      colors = d3.scaleOrdinal(["#92D400", "#A30000", "#337ab7"]);
+      colors = d3.scaleOrdinal(['#92D400', '#A30000', '#337ab7']);
     }
 
     const top =
       d3
-        .select("#d3-chart-root")
+        .select('#d3-chart-root')
         .node()
         .getBoundingClientRect().y + this.margin.top; // offset padding
     const vertical = d3
-      .select("#" + this.props.id)
-      .append("div")
-      .attr("class", "remove")
-      .style("opacity", 0)
-      .style("position", "absolute")
-      .style("z-index", "19")
-      .style("width", "1px")
-      .style("height", height + "px")
+      .select('#' + this.props.id)
+      .append('div')
+      .attr('class', 'remove')
+      .style('opacity', 0)
+      .style('position', 'absolute')
+      .style('z-index', '19')
+      .style('width', '1px')
+      .style('height', height + 'px')
       // need y position of chart
-      .style("top", top + "px")
-      .style("left", "0px")
-      .style("pointer-events", "none")
-      .style("border-left", "3px dotted #393f44");
+      .style('top', top + 'px')
+      .style('left', '0px')
+      .style('pointer-events', 'none')
+      .style('border-left', '3px dotted #393f44');
 
     // Three function that change the tooltip when user hover / move
     const handleMouseOver = function(d) {
@@ -96,8 +96,8 @@ class LineChart extends Component {
       // show vertical line
       vertical
         .transition()
-        .style("opacity", 1)
-        .style("left", intersectX + "px");
+        .style('opacity', 1)
+        .style('left', intersectX + 'px');
     };
     const handleMouseMove = function() {
       const radialOffset = this.r.baseVal.value / 2;
@@ -106,46 +106,45 @@ class LineChart extends Component {
           .select(this)
           .node()
           .getBoundingClientRect().x + radialOffset;
-      vertical.style("left", intersectX + "px");
+      vertical.style('left', intersectX + 'px');
     };
     const handleMouseOut = function() {
       // hide tooltip
       tooltip.handleMouseOut();
       // hide vertical line
-      vertical.transition().style("opacity", 0);
+      vertical.transition().style('opacity', 0);
     };
     // d3.select('svg').remove();
     const svg = d3
-      .select("#" + this.props.id)
-      .append("svg")
-      .attr("width", width + this.margin.left + this.margin.right)
-      .attr("height", height + this.margin.top + this.margin.bottom)
-      .attr("z", 100)
-      .append("g")
+      .select('#' + this.props.id)
+      .append('svg')
+      .attr('width', width + this.margin.left + this.margin.right)
+      .attr('height', height + this.margin.top + this.margin.bottom)
+      .attr('z', 100)
+      .append('g')
       .attr(
-        "transform",
-        "translate(" + this.margin.left + "," + this.margin.top + ")"
+        'transform',
+        'translate(' + this.margin.left + ',' + this.margin.top + ')'
       );
     // Tooltip
     const tooltip = new Tooltip({
-      svg: "#d3-chart-root > svg",
+      svg: '#d3-chart-root > svg',
       colors
     });
 
     var url = null;
-    if (this.props.value === "past 2 weeks") {
-      url = this.props.getApiUrl("systemchart14");
+    if (this.props.value === 'past 2 weeks') {
+      url = this.props.getApiUrl('systemchart14');
     }
-    if (this.props.value === "past week") {
-      url = this.props.getApiUrl("systemchart7");
+    if (this.props.value === 'past week') {
+      url = this.props.getApiUrl('systemchart7');
     }
-    if (this.props.value === "past month") {
-      url = this.props.getApiUrl("systemchart30");
+    if (this.props.value === 'past month') {
+      url = this.props.getApiUrl('systemchart30');
     }
-    url = url + this.props.cluster + "/";
+    url = url + this.props.cluster + '/';
     const response = await fetch(url);
     const raw_data = await response.json();
-
     const data = raw_data.map(function(d) {
       return {
         DATE: parseTime(d.created), // format date string into DateTime object
@@ -164,7 +163,7 @@ class LineChart extends Component {
     y.domain([
       0,
       d3.max(data, function(d) {
-        return d.TOTAL + 10;
+        return d.TOTAL;
       })
     ]);
 
@@ -190,107 +189,107 @@ class LineChart extends Component {
 
     // Add the Y Axis
     svg
-      .append("g")
+      .append('g')
       .call(
         d3
           .axisLeft(y)
           .ticks(10)
           .tickSize(-width)
       )
-      .selectAll("line")
-      .attr("stroke", "#d7d7d7");
+      .selectAll('line')
+      .attr('stroke', '#d7d7d7');
     // text label for the y axis
     svg
-      .append("text")
-      .attr("transform", "rotate(-90)")
-      .attr("y", 0 - this.margin.left)
-      .attr("x", 0 - height / 2)
-      .attr("dy", "1em")
-      .style("text-anchor", "middle")
-      .text("Job Runs");
+      .append('text')
+      .attr('transform', 'rotate(-90)')
+      .attr('y', 0 - this.margin.left)
+      .attr('x', 0 - height / 2)
+      .attr('dy', '1em')
+      .style('text-anchor', 'middle')
+      .text('Job Runs');
     // Add the X Axis
     svg
-      .append("g")
-      .attr("transform", "translate(0," + height + ")")
+      .append('g')
+      .attr('transform', 'translate(0,' + height + ')')
       .call(
         d3
           .axisBottom(x)
-          .ticks()
+          .ticks(8)
           .tickSize(-height)
-          .tickFormat(d3.timeFormat("%b-%d"))
-      ) // "Jan-01"
-      .selectAll("line")
-      .attr("stroke", "#d7d7d7");
+          .tickFormat(d3.timeFormat('%m/%d')) // "01/19"
+      )
+      .selectAll('line')
+      .attr('stroke', '#d7d7d7');
     // text label for the x axis
     svg
-      .append("text")
+      .append('text')
       .attr(
-        "transform",
-        "translate(" + width / 2 + " ," + (height + this.margin.top + 20) + ")"
+        'transform',
+        'translate(' + width / 2 + ' ,' + (height + this.margin.top + 20) + ')'
       )
-      .style("text-anchor", "middle")
-      .text("Date");
+      .style('text-anchor', 'middle')
+      .text('Date');
     // Add the successLine path.
     svg
-      .append("path")
+      .append('path')
       .data([data])
-      .attr("class", "line")
-      .style("fill", "none")
-      .style("stroke", () => colors(1))
-      .attr("stroke-width", 2)
-      .attr("d", successLine)
+      .attr('class', 'line')
+      .style('fill', 'none')
+      .style('stroke', () => colors(1))
+      .attr('stroke-width', 2)
+      .attr('d', successLine)
       .call(transition);
 
     // Add the failLine path.
     svg
-      .append("path")
+      .append('path')
       .data([data])
-      .attr("class", "line")
-      .style("fill", "none")
-      .style("stroke", () => colors(0))
-      .attr("stroke-width", 2)
-      .attr("d", failLine)
+      .attr('class', 'line')
+      .style('fill', 'none')
+      .style('stroke', () => colors(0))
+      .attr('stroke-width', 2)
+      .attr('d', failLine)
       .call(transition);
 
     // create our successLine circles
     svg
-      .selectAll("dot")
+      .selectAll('dot')
       .data(data)
       .enter()
-      .append("circle")
-      .attr("r", 3)
-      .style("stroke", () => colors(1))
-      .style("fill", () => colors(1))
-      .attr("cx", function(d) {
+      .append('circle')
+      .attr('r', 3)
+      .style('stroke', () => colors(1))
+      .style('fill', () => colors(1))
+      .attr('cx', function(d) {
         return x(d.DATE);
       })
-      .attr("cy", function(d) {
+      .attr('cy', function(d) {
         return y(d.RAN);
       })
 
-      .on("mouseover", handleMouseOver)
-      .on("mousemove", handleMouseMove)
-      .on("mouseout", handleMouseOut);
+      .on('mouseover', handleMouseOver)
+      .on('mousemove', handleMouseMove)
+      .on('mouseout', handleMouseOut);
     // create our failLine circles
     svg
-      .selectAll("dot")
+      .selectAll('dot')
       .data(data)
       .enter()
-      .append("circle")
-      .attr("r", 3)
-      .style("stroke", () => colors(0))
-      .style("fill", () => colors(0))
-      .attr("cx", function(d) {
+      .append('circle')
+      .attr('r', 3)
+      .style('stroke', () => colors(0))
+      .style('fill', () => colors(0))
+      .attr('cx', function(d) {
         return x(d.DATE);
       })
-      .attr("cy", function(d) {
+      .attr('cy', function(d) {
         return y(d.FAIL);
       })
-      .on("mouseover", handleMouseOver)
-      .on("mousemove", handleMouseMove)
-      .on("mouseout", handleMouseOut);
+      .on('mouseover', handleMouseOver)
+      .on('mousemove', handleMouseMove)
+      .on('mouseout', handleMouseOut);
     // Call the resize function whenever a resize event occurs
-    d3.select(window).on("resize", this.resize(this.init, 500));
+    d3.select(window).on('resize', this.resize(this.init, 500));
   }
 
   async componentDidMount() {
