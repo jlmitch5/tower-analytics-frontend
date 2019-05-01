@@ -63,11 +63,6 @@ class LineChart extends Component {
       colors = d3.scaleOrdinal(["#92D400", "#A30000", "#337ab7"]);
     }
 
-    const top =
-      d3
-        .select("#d3-chart-root")
-        .node()
-        .getBoundingClientRect().y + this.margin.top; // offset padding
     const vertical = d3
       .select("#" + this.props.id)
       .append("div")
@@ -78,13 +73,17 @@ class LineChart extends Component {
       .style("width", "1px")
       .style("height", height + "px")
       // need y position of chart
-      .style("top", top + "px")
       .style("left", "0px")
       .style("pointer-events", "none")
       .style("border-left", "3px dotted #393f44");
 
     // Three function that change the tooltip when user hover / move
     const handleMouseOver = function(d) {
+      const top =
+        d3
+          .select("#d3-chart-root")
+          .node()
+          .getBoundingClientRect().y + 20; // offset margin top
       const radialOffset = this.r.baseVal.value / 2;
       const intersectX =
         d3
@@ -97,16 +96,22 @@ class LineChart extends Component {
       vertical
         .transition()
         .style("opacity", 1)
+        .style("top", top + "px")
         .style("left", intersectX + "px");
     };
     const handleMouseMove = function() {
+      const top =
+        d3
+          .select("#d3-chart-root")
+          .node()
+          .getBoundingClientRect().y + 20; // offset margin top
       const radialOffset = this.r.baseVal.value / 2;
       const intersectX =
         d3
           .select(this)
           .node()
           .getBoundingClientRect().x + radialOffset;
-      vertical.style("left", intersectX + "px");
+      vertical.style("top", top + "px").style("left", intersectX + "px");
     };
     const handleMouseOut = function() {
       // hide tooltip
