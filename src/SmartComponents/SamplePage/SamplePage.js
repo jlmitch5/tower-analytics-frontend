@@ -370,7 +370,7 @@ class SamplePage extends Component {
     return (
       <React.Fragment>
         <PageHeader>
-          <PageHeaderTitle title="Tower Analytics" />
+          <PageHeaderTitle title="Automation Insights" />
         </PageHeader>
         <Main>
           <Card>
