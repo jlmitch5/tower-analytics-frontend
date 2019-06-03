@@ -204,8 +204,7 @@ class SamplePage extends Component {
         { value: "all clusters", label: "All Clusters", disabled: false }
       ]
     };
-    this.server = "nginx-tower-analytics2.5a9f.insights-dev.openshiftapps.com";
-    //this.server = 'ci.foo.redhat.com:1337';
+    this.server = 'ci.foo.redhat.com:1337';
     this.protocol = "https";
 
     this.onRightToggle = this.onRightToggle.bind(this);
