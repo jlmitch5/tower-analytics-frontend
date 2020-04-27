@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import Tooltip from '../Utilities/Tooltip';
 
 function BarChart(props) {
-    const [ timeout, setTimeout ] = useState(null);
+    const [ timeout, _setTimeout ] = useState(null);
 
     const draw = () => {
         // Clear our chart container element first
@@ -153,36 +153,23 @@ function BarChart(props) {
     };
 
     const resize = () => {
+        const timeoutRef = setTimeout(() => { init(); }, 500);
         clearTimeout(timeout);
-        setTimeout(() => { init(); }, 500);
+        _setTimeout(timeoutRef);
+
+        return timeoutRef;
     };
 
-    useEffect((prevProps) => {
+    useEffect(() => {
         init();
         // Call the resize function whenever a resize event occurs
-        window.addEventListener('resize', resize());
-        if (prevProps.value !== props.value) {
-            init();
-        }
-    });
+        window.addEventListener('resize', resize);
 
-    // componentDidMount() {
-    //     this.init();
-    //     // Call the resize function whenever a resize event occurs
-    //     window.addEventListener('resize', this.resize);
-    // }
-
-    // componentDidUpdate(prevProps) {
-    //     if (prevProps.value !== this.props.value) {
-    //         this.init();
-    //     }
-    // }
-
-    // componentWillUnmount() {
-    //     const { timeout } = this.state;
-    //     clearTimeout(timeout);
-    //     window.removeEventListener('resize', this.resize);
-    // }
+        return () => {
+            window.removeEventListener('resize', resize);
+            clearTimeout(timeout);
+        };
+    }, []);
 
     BarChart.propTypes = {
         id: PropTypes.string,
